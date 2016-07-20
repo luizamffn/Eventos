@@ -6,10 +6,12 @@ public class Atividade {
 	private Long id;
 	private double valor = 0;
 	private String nome;
+	private Evento evento;
 	private TipoAtividade tipoAtividade;
 	
 	
-	public Atividade(double valor, String nome, TipoAtividade tipoAtividade) {
+	public Atividade(Long id, double valor, String nome, Evento evento, TipoAtividade tipoAtividade) {
+		this.id = id;
 		this.valor = valor;
 		this.nome = nome;
 		this.tipoAtividade = tipoAtividade;
@@ -71,6 +73,14 @@ public class Atividade {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public Evento getEvento() {
+		return evento;
+	}
+
+	public void setEvento(Evento evento) {
+		this.evento = evento;
 	}
 	
 }

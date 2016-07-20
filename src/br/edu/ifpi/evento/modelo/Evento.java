@@ -18,7 +18,7 @@ public class Evento {
 	private Calendar dataInicio;
 	private Calendar dataFim;
 
-	public Evento(String nome, TipoEvento tipoEvento, Calendar dataInicio, Calendar dataFim) {
+	public Evento(String nome, TipoEvento tipoEvento, Calendar dataInicio, Calendar dataFim) throws Exception {
 		if ((verificarDataInicio(dataInicio))) {
 			this.nome = nome;
 			this.tipoEvento = tipoEvento;
@@ -28,12 +28,12 @@ public class Evento {
 		}
 	}
 
-	public boolean verificarDataInicio(Calendar dataInicio) {
+	public boolean verificarDataInicio(Calendar dataInicio) throws Exception {
 		Calendar now = new GregorianCalendar();
-		// System.out.println(dataInicio.getTimeInMillis() -
-		// now.getTimeInMillis());
+
 		if (dataInicio.getTimeInMillis() < now.getTimeInMillis()) {
-			// System.out.println("A data nao pode ser menor que a de hoje");
+			Exception e = new Exception("A data nao pode ser menor que a de hoje");
+			System.out.println(e.getMessage());
 			return false;
 		} else {
 			return true;
@@ -46,7 +46,7 @@ public class Evento {
 			atividades.add(atividade);
 			return true;
 		} else {
-			Exception e = new Exception("Atividade ja adicionado");
+			Exception e = new Exception("Atividade ja adicionada");
 			System.out.println(e.getMessage());
 			return false;
 		}

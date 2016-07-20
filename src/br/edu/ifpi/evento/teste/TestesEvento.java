@@ -28,7 +28,7 @@ public class TestesEvento {
 	}
 	
 	@Test
-	public void nao_deve_aceitar_eventos_data_passada() {
+	public void nao_deve_aceitar_eventos_data_passada() throws Exception {
 		dataInicial.set(2016, 05, 12, 20, 44, 11);
 		dataFinal.set(2016, 8, 12, 22, 00);
 		evento = new Evento("teste", TipoEvento.PUBLICA, dataInicial, dataFinal);
@@ -36,7 +36,7 @@ public class TestesEvento {
 	}
 	
 	@Test
-	public void deve_settar_automaticamente_em_inscrição_este_evento() {
+	public void deve_settar_automaticamente_em_inscrição_este_evento() throws Exception {
 		dataInicial.set(2016, 07, 12, 20, 44, 11);
 		dataFinal.set(2016, 8, 12, 22, 00);
 		evento = new Evento("teste", TipoEvento.PUBLICA, dataInicial, dataFinal);
@@ -45,11 +45,11 @@ public class TestesEvento {
 	}
 	
 	@Test
-	public void evento_recem_criado_deve_ter_zero_atividades() {
+	public void evento_recem_criado_deve_ter_zero_atividades() throws Exception {
 		dataInicial.set(2016, 07, 12, 20, 44, 11);
 		dataFinal.set(2016, 8, 12, 22, 00);
 		evento = new Evento("teste", TipoEvento.PUBLICA, dataInicial, dataFinal);
-		assertEquals(null, evento.getAtividades());
+		assertEquals(0, evento.getAtividades().size());
 	}
 	
 //	@Test
@@ -58,7 +58,7 @@ public class TestesEvento {
 //	}
 	
 	@Test
-	public void deve_aceitar_eventos_com_data_hoje_ou_futura() {
+	public void deve_aceitar_eventos_com_data_hoje_ou_futura() throws Exception {
 		dataInicial.set(2016, 07, 12, 20, 44, 11);
 		dataFinal.set(2016, 8, 12, 22, 00);
 		evento = new Evento("teste", TipoEvento.PUBLICA, dataInicial, dataFinal);
