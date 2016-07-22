@@ -9,47 +9,17 @@ public class Atividade {
 	private Evento evento;
 	private TipoAtividade tipoAtividade;
 	
-	
 	public Atividade(Long id, double valor, String nome, Evento evento, TipoAtividade tipoAtividade) {
 		this.id = id;
 		this.valor = valor;
 		this.nome = nome;
 		this.tipoAtividade = tipoAtividade;
 	}
-
-	public Long getId() {
-		return id;
-	}
-
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 	
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public TipoAtividade getTipoAtividade() {
-		return tipoAtividade;
-	}
-
-	public void setTipoAtividade(TipoAtividade tipoAtividade) {
-		this.tipoAtividade = tipoAtividade;
-	}
-
 	public double getValor() {
 		return valor;
 	}
-
-	public void setValor(double valor) {
-		this.valor = valor;
-	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -75,12 +45,4 @@ public class Atividade {
 		return true;
 	}
 
-	public Evento getEvento() {
-		return evento;
-	}
-
-	public void setEvento(Evento evento) {
-		this.evento = evento;
-	}
-	
 }

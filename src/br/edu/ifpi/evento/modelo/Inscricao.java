@@ -1,7 +1,14 @@
 package br.edu.ifpi.evento.modelo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import br.edu.ifpi.evento.exceptons.AtividadeException;
+import br.edu.ifpi.evento.exceptons.AtividadeNaoEstaNoEventoException;
+import br.edu.ifpi.evento.exceptons.CupomException;
+import br.edu.ifpi.evento.exceptons.InscricaoPagaException;
+import br.edu.ifpi.evento.exceptons.PagamentoInferiorException;
 
 public class Inscricao {
 	private Long id;
@@ -9,126 +16,92 @@ public class Inscricao {
 	private double valorTotal = 0;
 	private Evento evento;
 	private double desconto = 0;
-	private double valorComDesconto = 0;
 	private List<Cupom> cupons = new ArrayList<Cupom>();
 
 	private List<Atividade> atividades = new ArrayList<Atividade>();
-	
+
 	public Inscricao(Evento evento) {
 		this.evento = evento;
 		this.evento.adicionarIncricao(this);
 	}
-	
-	public void pagarInscricao(double valor) throws Exception {
-		if(valor >= valorTotal){
+
+	public void pagarInscricao(double valor) throws PagamentoInferiorException {
+		if (valor >= valorTotal) {
 			paga = true;
-		}else{
-			Exception e  = new Exception("Valor inferior ao total");
-			System.out.println(e.getMessage());
-		}
-	}
-	
-	public boolean adicionarAtividade(Atividade atividade) throws Exception {
-		if(!paga){
-			return verificarSeAtividadeEstaNoEvento(atividade);
-		}else{
-			Exception e = new Exception("incricao ja esta paga");
-			System.out.println(e.getMessage());
-			return false;
+		} else {
+			throw new PagamentoInferiorException();
 		}
 	}
 
-	protected boolean verificarSeAtividadeEstaNoEvento(Atividade atividade) throws Exception{
-		if(evento.getAtividades().contains(atividade)){
-			return adicionarAtividadeNaoRepetida(atividade);
-		}else{
-			Exception e = new Exception("atividade nao esta no evento da incricao");
-			System.out.println(e.getMessage());
-			return false;
+	public void adicionarAtividade(Atividade atividade)
+			throws InscricaoPagaException, AtividadeNaoEstaNoEventoException, AtividadeException {
+		if (!paga) {
+			verificarSeAtividadeEstaNoEvento(atividade);
+			calcularValorTotal();
+		} else {
+			throw new InscricaoPagaException();
 		}
 	}
-	
-	protected boolean adicionarAtividadeNaoRepetida(Atividade atividade){
-		if(!atividades.contains(atividade)){
+
+	protected void verificarSeAtividadeEstaNoEvento(Atividade atividade)
+			throws AtividadeNaoEstaNoEventoException, AtividadeException {
+		if (evento.getAtividades().contains(atividade)) {
+			adicionarAtividadeNaoRepetida(atividade);
+		} else {
+			throw new AtividadeNaoEstaNoEventoException();
+		}
+	}
+
+	protected void adicionarAtividadeNaoRepetida(Atividade atividade) throws AtividadeException {
+		if (!atividades.contains(atividade)) {
 			atividades.add(atividade);
-			return true;
-		}else{
-			Exception e = new Exception("atividade ja esta adicionada na inscricao");
-			System.out.println(e.getMessage());
-			return false;
-		} 
+		} else {
+			throw new AtividadeException();
+		}
 	}
 
-	public void AplicarDescontoNaInscricao(){
-		for (Cupom cupom : cupons) {
-			if (cupom.isAtivo()){
-				desconto += valorTotal * cupom.getPorcentagemDoDesconto();
-			}
-		}
-		valorComDesconto = valorTotal - desconto;
-	}
-	
-	public double calcularValorTotal(){
+	protected double calcularValorTotal() {
 		for (Atividade atividade : atividades) {
 			valorTotal = atividade.getValor();
 		}
+		return AplicarDescontoNaInscricao();
+	}
+
+	protected double AplicarDescontoNaInscricao() {
+		for (Cupom cupom : cupons) {
+			if (cupom.isAtivo()) {
+				desconto += valorTotal * cupom.getPorcentagemDoDesconto();
+			}
+		}
+		return valorTotal -= desconto;
+	}
+	
+	public void adicionarCupom(Cupom cupom) throws CupomException{
+		if (!cupons.contains(cupom)) {
+			cupons.add(cupom);
+		} else {
+			throw new CupomException();
+		}
+	}
+	
+	public double getValorTotal() {
 		return valorTotal;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public boolean isPaga() {
 		return paga;
 	}
 
-	public void setPaga(boolean paga) {
-		this.paga = paga;
-	}
-
-	public double getValorTotal() {
-		return valorTotal;
-	}
-
-	public void setValorTotal(double valorTotal) {
-		this.valorTotal = valorTotal;
+	public List<Atividade> getAtividades() {
+		return Collections.unmodifiableList(atividades);
 	}
 
 	public Evento getEvento() {
 		return evento;
 	}
 
-	public List<Atividade> getAtividades() {
-		return atividades;
-	}
-
-	public double getValorComDesconto() {
-		return valorComDesconto;
-	}
-
-	public void setValorComDesconto(double valorComDesconto) {
-		this.valorComDesconto = valorComDesconto;
-	}
-
-	public double getDesconto() {
-		return desconto;
-	}
-
-	public void setDesconto(double desconto) {
-		this.desconto = desconto;
-	}
-
-	public List<Cupom> getCupom() {
-		return cupons;
-	}
-
-	public void setCupom(List<Cupom> cupom) {
-		this.cupons = cupom;
+	public List<Cupom> getCupons() {
+		return Collections.unmodifiableList(cupons);
 	}
 
 }

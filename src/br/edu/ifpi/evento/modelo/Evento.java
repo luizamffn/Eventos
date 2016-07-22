@@ -2,10 +2,13 @@ package br.edu.ifpi.evento.modelo;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import br.edu.ifpi.evento.enums.TipoEvento;
+import br.edu.ifpi.evento.exceptons.AtividadeException;
+import br.edu.ifpi.evento.exceptons.DataMenorQueAtualException;
 
 public class Evento {
 	private Long id;
@@ -14,50 +17,32 @@ public class Evento {
 	private List<Atividade> atividades = new ArrayList<Atividade>();
 	private TipoEvento tipoEvento;
 	private List<Inscricao> inscricoes = new ArrayList<Inscricao>();
-	private boolean ativo;
+	private List<Cupom> Cupons = new ArrayList<Cupom>();
 	private Calendar dataInicio;
 	private Calendar dataFim;
 
-	public Evento(String nome, TipoEvento tipoEvento, Calendar dataInicio, Calendar dataFim) throws Exception {
-		if ((verificarDataInicio(dataInicio))) {
-			this.nome = nome;
-			this.tipoEvento = tipoEvento;
-			this.ativo = true;
-			this.dataInicio = dataInicio;
-			this.dataFim = dataFim;
-		}
+	public Evento(String nome, TipoEvento tipoEvento, Calendar dataInicio, Calendar dataFim)
+			throws DataMenorQueAtualException {
+		verificarDataInicio(dataInicio);
+		this.nome = nome;
+		this.tipoEvento = tipoEvento;
+		this.dataInicio = dataInicio;
+		this.dataFim = dataFim;
 	}
 
-	public boolean verificarDataInicio(Calendar dataInicio) throws Exception {
+	public void verificarDataInicio(Calendar dataInicio) throws DataMenorQueAtualException {
 		Calendar now = new GregorianCalendar();
-
 		if (dataInicio.getTimeInMillis() < now.getTimeInMillis()) {
-			Exception e = new Exception("A data nao pode ser menor que a de hoje");
-			System.out.println(e.getMessage());
-			return false;
-		} else {
-			return true;
+			throw new DataMenorQueAtualException();
 		}
-
 	}
-	
-	public boolean adicionarAtividade(Atividade atividade) throws Exception {
+
+	public void adicionarAtividade(Atividade atividade) throws AtividadeException {
 		if (!atividades.contains(atividade)) {
 			atividades.add(atividade);
-			return true;
 		} else {
-			Exception e = new Exception("Atividade ja adicionada");
-			System.out.println(e.getMessage());
-			return false;
+			throw new AtividadeException();
 		}
-	}
-
-	public boolean verificarValidade() {
-		Calendar now = new GregorianCalendar();
-		if (dataFim.getTimeInMillis() < now.getTimeInMillis()) {
-			setAtivo(false);
-		}
-		return isAtivo();
 	}
 
 	public void adicionarIncricao(Inscricao inscricao) {
@@ -65,15 +50,16 @@ public class Evento {
 	}
 
 	public boolean isAtivo() {
-		return ativo;
-	}
-
-	public void setAtivo(boolean ativo) {
-		this.ativo = ativo;
+		Calendar now = new GregorianCalendar();
+		return dataFim.getTimeInMillis() < now.getTimeInMillis();
 	}
 
 	public List<Atividade> getAtividades() {
-		return atividades;
+		return Collections.unmodifiableList(atividades);
+	}
+
+	public List<Cupom> getCupons() {
+		return Collections.unmodifiableList(Cupons);
 	}
 
 }

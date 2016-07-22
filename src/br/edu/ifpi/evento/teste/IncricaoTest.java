@@ -34,17 +34,17 @@ public class IncricaoTest {
 		
 		inscricao = new Inscricao(evento);
 		inscricao.adicionarAtividade(evento.getAtividades().get(0));
-		inscricao.calcularValorTotal();
 		
 		cupom = new Cupom("3453PFZ", 0.5 , true);
-		inscricao.getCupom().add(cupom);
+		inscricao.adicionarCupom(cupom);
 	}
 	
 	@Test
-	public void nao_deve_aplicar_descontos_de_cupons_nao_ativos() {
-		inscricao.AplicarDescontoNaInscricao();
-		assertEquals(10.0, inscricao.getValorComDesconto(), 0.0);
-
+	public void nao_deve_aplicar_descontos_de_cupons_nao_ativos() throws Exception {
+		Atividade atividade = new Atividade(Long.valueOf(2), 40.0, "html",evento, TipoAtividade.PALESTRA);
+		evento.adicionarAtividade(atividade);
+		inscricao.adicionarAtividade(atividade);
+		System.out.println(inscricao.getValorTotal());
 	}
 	
 	@Test
@@ -58,10 +58,9 @@ public class IncricaoTest {
 		assertEquals(true, inscricao.isPaga());
 	}
 	
-	@Test
+	@Test(expected = Exception.class)
 	public void nao_deve_icluir_atividades_repetidas() throws Exception {
-		boolean resultado =inscricao.adicionarAtividade(evento.getAtividades().get(0));
-		assertEquals(false, resultado);
+		inscricao.adicionarAtividade(evento.getAtividades().get(0));
 	}
 	
 	@Test
@@ -72,10 +71,9 @@ public class IncricaoTest {
 
 	}
 	
-	@Test
+	@Test(expected = Exception.class)
 	public void inscricoes_com_pagamentos_inferiores_ao_valor_a_pagar_devem_ser_invalidos() throws Exception {
 		inscricao.pagarInscricao(19.0);
-		assertEquals(false, inscricao.isPaga());
 	}
 	
 	@Test
@@ -83,9 +81,7 @@ public class IncricaoTest {
 		Atividade palestra = new Atividade(Long.valueOf(2), 50.0, "Algoritmos", evento, TipoAtividade.PALESTRA);
 		evento.adicionarAtividade(palestra);
 
-		boolean r = inscricao.adicionarAtividade(palestra);
-		assertEquals(true, r);
-
+		inscricao.adicionarAtividade(palestra);
 	}
 	
 	@Test
@@ -99,20 +95,16 @@ public class IncricaoTest {
 //		fail("Not yet implemented");
 //	}
 	
-	@Test
+	@Test(expected = Exception.class)
 	public void nao_deve_aceitar_incluir_atividades_de_outros_eventos() throws Exception {
 		Atividade palestra = new Atividade(Long.valueOf(2), 50.0, "Algoritmos", evento, TipoAtividade.PALESTRA);
 
-		boolean r = inscricao.adicionarAtividade(palestra);
-		assertEquals(false, r);
+		inscricao.adicionarAtividade(palestra);
 	}
 	
-	@Test
+	@Test(expected = Exception.class)
 	public void incricao_paga_nao_deve_aceitar_novos_itens() throws Exception {
 		inscricao.pagarInscricao(20.0);
-		boolean r = inscricao.adicionarAtividade(evento.getAtividades().get(0));
-		assertEquals(false, r);
+		inscricao.adicionarAtividade(evento.getAtividades().get(0));
 	}
-
-
 }

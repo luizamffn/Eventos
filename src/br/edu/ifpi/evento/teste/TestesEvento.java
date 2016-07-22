@@ -27,12 +27,11 @@ public class TestesEvento {
 //		evento = new Evento("teste", TipoEventoEnum.PUBLICA,dataInicial , dataFinal);
 	}
 	
-	@Test
+	@Test(expected = Exception.class)
 	public void nao_deve_aceitar_eventos_data_passada() throws Exception {
 		dataInicial.set(2016, 05, 12, 20, 44, 11);
 		dataFinal.set(2016, 8, 12, 22, 00);
 		evento = new Evento("teste", TipoEvento.PUBLICA, dataInicial, dataFinal);
-		assertEquals(false, evento.verificarDataInicio(dataInicial));
 	}
 	
 	@Test
@@ -58,11 +57,10 @@ public class TestesEvento {
 //	}
 	
 	@Test
-	public void deve_aceitar_eventos_com_data_hoje_ou_futura() throws Exception {
-		dataInicial.set(2016, 07, 12, 20, 44, 11);
+	public void deve_aceitar_eventos_com_data_hoje_ou_futura() throws Exception{
+		dataInicial.set(2016, 7, 12, 20, 44, 11);
 		dataFinal.set(2016, 8, 12, 22, 00);
 		evento = new Evento("teste", TipoEvento.PUBLICA, dataInicial, dataFinal);
-		assertEquals(true, evento.verificarDataInicio(dataInicial));
 	}
 	
 
